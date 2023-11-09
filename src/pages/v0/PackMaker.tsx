@@ -1,65 +1,65 @@
-type Collection = {
-    name: string,
-    children: Selectable[]
-}
-type Selectable = {
-    id: string
-    name: string
-    img?: string
-}
+import {useState} from "preact/compat";
+import CategoryDisplay from "../../components/v0/CategoryDisplay";
+import DownloadModal from "../../components/v0/DownloadModal";
+import {col} from "../../ts/const";
+import {genInfoFile, getPackFile} from "../../ts/v0/FileUtil";
 
 
 export default function () {
+    const [list, setList] = useState<PackOption[]>([])
+    const [modal, setModal] = useState(false)
 
-    let col: Collection[] = [
-        {
-            name: "ola",
-            children: [
-                {
-                    id: "tyke",
-                    name: "Terra Ore"
-                },
-                {
-                    id: "osta-kt",
-                    name: "Orange Planks"
-                }, {
-                    id: "red-ore",
-                    name: "Redstone House"
-                }
-            ]
-        },
-        {
-            name: "Hell",
-            children: [
-                {
-                    id: "hem",
-                    name: "Hell Ore Prcoessor"
-                },
-                {
-                    id: "hek",
-                    name: "Hell Planks"
-                }, {
-                    id: "hell-red",
-                    name: "Hallowwer"
-                }
-            ]
-        }
-    ]
+    let selectedVersion = "1.20"
 
-    return (<div class="p-5 flex flex-col gap-6">
-        {col.map((e) =>
-            (<div class="flex flex-col gap-4 px-8 py-3 bg-white bg-opacity-5 rounded-3xl ">
-                <h1 class="pl-5 text-3xl font-bold font-mono">{e.name}</h1>
-                <div class="flex flex-wrap gap-4">{e.children.map(child =>
-                    (<div key={child.id} class="flex flex-col items-center">
-                        <img src={child.img || "https://vectorified.com/images/default-user-icon-33.jpg"}
-                             alt={`${child.name} icon`} class="w-16 "/>
-                        <h3 class="font-semibold text-lg">{child.name}</h3>
-                        text
-                    </div>))}
+    function addToList(item: PackOption) {
+        setList([...list, item])
+    }
+
+    function removeFromList(item: PackOption) {
+        setList(list.filter(e => e.id !== item.id))
+    }
+
+    function download() {
+        setModal(true)      // openModal("DataPack")
+
+        let infoFile: InfoFile = genInfoFile(list, selectedVersion)
+        let packFiles: Blob[] = []
+        list.forEach(async (e) => packFiles.push(await getPackFile(e)))
+        console.log(infoFile)
+        console.log(packFiles)
+        //genDownloadFile(infoFile, packFiles).then((url) => openUrl(url));
+    }
+
+    return (
+        <>
+            <div class="flex gap-2">
+                <div class=" w-full p-5 flex flex-col gap-6">
+                    {col.map((e) => (<CategoryDisplay data={e} onSelect={addToList} onUnSelect={removeFromList}/>))}
                 </div>
-            </div>)
-        )
-        }
-    </div>)
+                <div class="flex flex-col w-64 gap-5 p-5">
+                    <div class="flex flex-col gap-2 bg-white bg-opacity-10 p-3 rounded-xl">
+                        <span class="text-lg">Selected Packs:</span>
+                        <ul class="bg-bg rounded">
+                            {list.map(e => (
+                                <li class="p-1">{e.name}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    {list.length > 0 &&
+                        <button class={`bg-white bg-opacity-5 py-3 text-xl semibold rounded-xl`}
+                                onClick={download}>Download
+                        </button>
+                    }
+                </div>
+            </div>
+            <DownloadModal isOpen={modal} closeModal={() => {
+                setModal(false)
+            }}/>
+        </>)
+
+
+}
+
+function openUrl(url: string) {
+    window.open(url, '_self', 'noopener,noreferrer')
 }
