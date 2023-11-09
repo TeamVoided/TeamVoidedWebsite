@@ -1,9 +1,9 @@
 import {useState} from "preact/compat";
 import CategoryDisplay from "../../components/v0/CategoryDisplay";
 import DownloadModal from "../../components/v0/DownloadModal";
-import {col} from "../../ts/const";
-import {genDownloadFile, genInfoFile, getPackFile} from "../../ts/v0/FileUtil";
-import {downloadBlob} from "../../ts/Utils";
+import {col} from "../../utils/const";
+import {genDownloadFile, genInfoFile, genPackHash, getPackFile} from "../../utils/v0/FileUtil";
+import {downloadBlob} from "../../utils/Utils";
 
 
 export default function () {
@@ -23,11 +23,13 @@ export default function () {
     function download() {
         setModal(true)      // openModal("DataPack")
 
-        let infoFile: InfoFile = genInfoFile(list, selectedVersion)
+        const infoFile: InfoFile = genInfoFile(list, selectedVersion)
         let packFiles: PackFile[] = []
         list.forEach(async (e) => packFiles.push(await getPackFile(e)))
 
-        genDownloadFile(infoFile, packFiles).then(data => downloadBlob(data, "VoidedTweaks_UNZIPME.zip"));
+        const hash = genPackHash(list)
+
+        genDownloadFile(infoFile, packFiles).then(data => downloadBlob(data, `VoidedTweaks_${hash}_UNZIPME.zip`));
     }
 
     return (

@@ -1,5 +1,4 @@
 import {BlobReader, BlobWriter, TextReader, ZipWriter} from "@zip.js/zip.js";
-import {tsParseMaybeAssignWithJSX} from "sucrase/dist/types/parser/plugins/typescript";
 import {format} from "../Utils";
 
 export function genInfoFile(packOptions: PackOption[], version: string): InfoFile {
@@ -21,6 +20,11 @@ export async function getPackFile(pack: PackOption): Promise<PackFile> {
 
 export function getPackUrl(pack: PackOption): string{
     return `/data/${pack.id}/${pack.version}.zip`
+}
+
+
+export function genPackHash(packs: PackOption[]):string {
+    return crypto.randomUUID().split("-")[0]
 }
 
 export async function genDownloadFile(info: InfoFile, packs: PackFile[]): Promise<Blob> {
