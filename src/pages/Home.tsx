@@ -1,13 +1,9 @@
-import preactLogo from '../assets/preact.svg';
-
+import logo from "../assets/logo.png"
 export default function Home() {
 	return (
-		<div class="home">
-			<img src={preactLogo} alt="Preact logo" height="160" width="160"/>
-			<h1>Get Started building Vite-powered Preact Apps </h1>
-			<section>
-
-			</section>
+		<div class="flex h-[90vh] flex-col items-center justify-center gap-8">
+			<img src={logo} alt="TeamVoided logo" width="800" />
+			<h1 class="text-xl font-light italic">"The best god dam pirates you have ever seen"</h1>
 		</div>
 	);
 }
