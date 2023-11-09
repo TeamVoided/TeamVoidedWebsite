@@ -2,7 +2,8 @@ import {useState} from "preact/compat";
 import CategoryDisplay from "../../components/v0/CategoryDisplay";
 import DownloadModal from "../../components/v0/DownloadModal";
 import {col} from "../../ts/const";
-import {genInfoFile, getPackFile} from "../../ts/v0/FileUtil";
+import {genDownloadFile, genInfoFile, getPackFile} from "../../ts/v0/FileUtil";
+import {downloadBlob} from "../../ts/Utils";
 
 
 export default function () {
@@ -23,11 +24,10 @@ export default function () {
         setModal(true)      // openModal("DataPack")
 
         let infoFile: InfoFile = genInfoFile(list, selectedVersion)
-        let packFiles: Blob[] = []
+        let packFiles: PackFile[] = []
         list.forEach(async (e) => packFiles.push(await getPackFile(e)))
-        console.log(infoFile)
-        console.log(packFiles)
-        //genDownloadFile(infoFile, packFiles).then((url) => openUrl(url));
+
+        genDownloadFile(infoFile, packFiles).then(data => downloadBlob(data, "VoidedTweaks_UNZIPME.zip"));
     }
 
     return (
@@ -60,6 +60,3 @@ export default function () {
 
 }
 
-function openUrl(url: string) {
-    window.open(url, '_self', 'noopener,noreferrer')
-}

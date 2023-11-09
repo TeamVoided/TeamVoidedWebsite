@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@headlessui/react": "latest",
+    "@zip.js/zip.js": "^2.7.30",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",
     "preact": "^10.13.1",

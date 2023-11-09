@@ -9,6 +9,10 @@ type PackOption = {
     name: string
     img?: string
 }
+type PackFile = {
+    info: PackOption,
+    data: Blob
+}
 
 type PackDataOption = {
     id: string

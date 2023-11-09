@@ -1,3 +1,7 @@
+import {BlobReader, BlobWriter, TextReader, ZipWriter} from "@zip.js/zip.js";
+import {tsParseMaybeAssignWithJSX} from "sucrase/dist/types/parser/plugins/typescript";
+import {format} from "../Utils";
+
 export function genInfoFile(packOptions: PackOption[], version: string): InfoFile {
     return {
         version: version,
@@ -5,14 +9,27 @@ export function genInfoFile(packOptions: PackOption[], version: string): InfoFil
     }
 }
 
-export async function getPackFile(pack: PackOption): Promise<Blob> {
-    let url = `/data/${pack.id}/${pack.version}.zip`
+export async function getPackFile(pack: PackOption): Promise<PackFile> {
     let data: Blob
     try {
-        data = await fetch(url).then(res => res.blob());
+        data = await fetch(getPackUrl(pack)).then(res => res.blob());
     } catch (e) {
         console.error(e)
     }
+    return {info: pack, data}
+}
 
-    return data
+export function getPackUrl(pack: PackOption): string{
+    return `/data/${pack.id}/${pack.version}.zip`
+}
+
+export async function genDownloadFile(info: InfoFile, packs: PackFile[]): Promise<Blob> {
+    const zip = new ZipWriter(new BlobWriter());
+
+    await zip.add(`info.json`, new TextReader(format(info)))
+    for (const pack of packs) {
+        await zip.add(`${pack.info.name}-${pack.info.version}.zip`, new BlobReader(pack.data));
+    }
+
+    return await zip.close();
 }
