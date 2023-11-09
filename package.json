@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "bun run build && bun run preview"
   },
   "dependencies": {
     "@headlessui/react": "latest",

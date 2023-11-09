@@ -23,7 +23,7 @@ export function getPackUrl(pack: PackOption): string{
 }
 
 
-export function genPackHash(packs: PackOption[]):string {
+export function genPackHash(_: PackOption[]):string {
     return crypto.randomUUID().split("-")[0]
 }
 
