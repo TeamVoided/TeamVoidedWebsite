@@ -25,3 +25,9 @@ export function downloadBlob(blob: Blob, name: string) {
     aTag.click();
     URL.revokeObjectURL(link)
 }
+
+export function sortAlphabet(a: string, b: string): number {
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
+}
